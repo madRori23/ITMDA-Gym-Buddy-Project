@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#000000"
+    android:fillViewport="true"
+    tools:ignore="HardcodedText"
+    >
+
+    <LinearLayout android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:padding="24dp"
+        tools:ignore="MissingConstraints">
+
+        <ImageView
+            android:id="@+id/logo"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_marginBottom="16dp"
+            android:contentDescription="Gym Buddies Logo"
+            android:src="@drawable/dumbell"/>
+
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Gym Buddies"
+            android:textColor="#2196F3"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            tools:ignore="HardcodedText"/>
+
+        <TextView
+            android:id="@+id/tvSubtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:text="Register your gym buddy account"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            tools:ignore="HardcodedText"/>
+
+        <!--  Username  -->
+        <EditText
+            android:id="@+id/etEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:autofillHints="email"
+            android:background="@color/white"
+            android:hint="Email"
+            android:inputType="text"
+            android:padding="12dp"
+            android:textColor="@color/black"
+            android:textColorHint="#888888"
+            android:layout_marginBottom="16dp"/>
+
+        <EditText
+            android:id="@+id/etUsername"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:autofillHints="Full Name"
+            android:background="@color/white"
+            android:hint="Name and Surname"
+            android:inputType="text"
+            android:padding="12dp"
+            android:textColor="@color/black"
+            android:textColorHint="#888888"
+            android:layout_marginBottom="16dp"/>
+
+        <!--  Password  -->
+        <EditText
+            android:id="@+id/etPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:autofillHints="password"
+            android:background="@color/white"
+            android:hint="Password"
+            android:inputType="textPassword"
+            android:padding="12dp"
+            android:textColor="@color/black"
+            android:textColorHint="#888888"
+            android:layout_marginBottom="16dp"/>
+        <!--  Confirm Password  -->
+        <EditText
+            android:id="@+id/etConfirmPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:autofillHints="password"
+            android:background="@color/white"
+            android:hint="Confirm Password"
+            android:inputType="textPassword"
+            android:padding="12dp"
+            android:textColor="@color/black"
+            android:textColorHint="#888888"
+            android:layout_marginBottom="16dp"/>
+        <!--  Age  -->
+        <EditText
+            android:id="@+id/etAge"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:autofillHints="age"
+            android:background="@color/white"
+            android:hint="Age"
+            android:inputType="number"
+            android:padding="12dp"
+            android:textColor="@color/black"
+            android:textColorHint="#888888"
+            android:layout_marginBottom="16dp"/>
+        <!--  Gender  -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Please Select Your Gender"
+            android:textStyle="bold"
+            android:textAlignment="center"
+            android:textColor="#FFFFFF"
+            android:layout_marginBottom="8dp"
+            tools:ignore="HardcodedText"/>
+
+        <RadioGroup
+            android:id="@+id/rgGender"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="16dp">
+
+            <RadioButton
+                android:id="@+id/rbMale"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Male"
+                android:textColor="#FFFFFF"
+                tools:ignore="HardcodedText"/>
+
+            <RadioButton
+                android:id="@+id/rbFemale"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Female"
+                android:textColor="#FFFFFF"
+                tools:ignore="HardcodedText"/>
+
+            <RadioButton
+                android:id="@+id/rbOther"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Other"
+                android:textColor="#FFFFFF"
+                tools:ignore="HardcodedText"/>
+
+        </RadioGroup>
+        <!--  Contact Details  -->
+        <EditText
+            android:id="@+id/etContact"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:autofillHints="email/phone"
+            android:hint="Contact (email/phone)"
+            android:inputType="textEmailAddress"
+            android:padding="12dp"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#888888"
+            android:layout_marginBottom="16dp"/>
+        <!--  Membership Type  -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Membership Type"
+            android:textStyle="bold"
+            android:textAlignment="center"
+            android:textColor="#FFFFFF"
+            android:layout_marginBottom="8dp"
+            tools:ignore="HardcodedText"/>
+
+        <RadioGroup
+            android:id="@+id/rgMembership"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="24dp">
+
+            <RadioButton
+                android:id="@+id/rbBuddyPass"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Have a buddy pass"
+                android:textColor="#FFFFFF"
+                android:checked="true"
+                tools:ignore="HardcodedText"/>
+
+            <RadioButton
+                android:id="@+id/rbNoBuddyPass"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Don't have buddy pass"
+                android:textColor="#FFFFFF"
+                tools:ignore="HardcodedText"/>
+        </RadioGroup>
+        <!--  Register Button  -->
+        <Button
+            android:id="@+id/btnRegister"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Register Account"
+            android:backgroundTint="#2196F3"
+            style="?android:attr/buttonBarButtonStyle"
+            android:textColor="#FFFFFF"
+            android:padding="12dp"
+            android:layout_marginBottom="8dp"
+            tools:ignore="HardcodedText"/>
+        <!--  Login link  -->
+        <TextView
+            android:id="@+id/tvLogin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Already have an account? Login"
+            android:textColor="#2196F3"
+            android:layout_marginTop="16dp"
+            android:layout_gravity="center_horizontal"
+            android:padding="16dp"
+            tools:ignore="HardcodedText"/>
+    </LinearLayout>
+
+</androidx.core.widget.NestedScrollView>

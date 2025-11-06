@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">Gym Buddy</string>
+    <string name="buddy_pass">Buddy Pass</string>
+    <string name="welcome_message">Find your perfect workout partner</string>
+    <string name="login">Login</string>
+    <string name="new_account">Create New Account</string>
+    <string name="app_logo">App Logo</string>
+    <string name="welcomeMessage">Welcome!</string>
+    <string name="passHolder">Pass Holder</string>
+    <string name="createSchedule">Create Schedule</string>
+    <string name="viewSchedule">View Schedule</string>
+    <string name="existingSchedules">Existing Schedules</string>
+    <string name="schedule_title">Schedule Title</string>
+    <string name="date">Date</string>
+    <string name="time">Time</string>
+    <string name="location">Location</string>
+    <string name="requests">Requests</string>
+    <string name="accept">Accept</string>
+    <string name="decline">Decline</string>
+    <string name="cancelSchedule">Cancel Schedule</string>
+    <string name="update">Update</string>
+    <string name="delete">Delete</string>
+</resources>
