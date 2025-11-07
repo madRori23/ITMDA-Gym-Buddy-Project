@@ -119,11 +119,14 @@ public class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.ViewHo
                             // Set button click listeners
                             btnAccept.setOnClickListener(v -> {
                                 updateBookingRequestStatus(requestId, "accepted", displayName, holder, position);
+                                //Response message
+                                sendMessage(userEmail, "accepted", userName);
                                 Toast.makeText(context, displayName + " accepted", Toast.LENGTH_SHORT).show();
                             });
 
                             btnDecline.setOnClickListener(v -> {
                                 updateBookingRequestStatus(requestId, "declined", displayName, holder, position);
+                                sendMessage(userEmail, "declined", userName);
                                 Toast.makeText(context, displayName + " declined", Toast.LENGTH_SHORT).show();
                             });
 
@@ -154,6 +157,44 @@ public class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.ViewHo
                 .addOnFailureListener(e -> {
                     Toast.makeText(context, "Failed to update request: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     Log.e("ScheduleAdapter", "Error updating request: " + e.getMessage());
+                });
+    }
+
+    //send reponse message to trainer
+    private void sendMessage(String targetUser, String status, String creatorId) {
+        Log.d("ScheduleAdapter Message", "Sending message to: " + targetUser + " Status: " + status);
+
+        //Find target user in database
+        db.collection("users")
+                .whereEqualTo("email", targetUser)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    if (!queryDocumentSnapshots.isEmpty()) {
+                        String targetUserId = queryDocumentSnapshots.getDocuments().get(0).getId();
+                        Log.d("ScheduleAdapter Message ", "Found user ID: " + targetUserId + " for email: " + targetUser);
+
+                        //Send Notification using targetUserId (Backend checks for FCMToken)
+
+                        //Create notification
+                        String title = "Request to join session has been " + status;
+                        String body =  creatorId +" has " + status + " your request to join their session";
+
+                        FCMApiService.getInstance().sendMessage(targetUserId, title, body, new FCMApiService.ApiCallBack() {
+                            @Override
+                            public void onSuccess(String response) {
+                                Log.d("ScheduleAdapter Message", "Message has been delivered to:" + targetUser);
+                            }
+
+                            @Override
+                            public void onFailure(String error) {
+                                Log.e("ScheduleAdapter Message", "Message failed to deliver to: " + targetUser + "Error: " + error);
+                            }
+                        });
+                    }else{
+                        Log.d("ScheduleAdapter Message", "No user id found with email: " + targetUser);
+                    }
+                }).addOnFailureListener(e ->{
+                    Log.e("ScheduleAdapter Message", "Error searching for user ID" + e.getMessage());
                 });
     }
 

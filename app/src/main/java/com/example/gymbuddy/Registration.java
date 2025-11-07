@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -129,8 +130,18 @@ public class Registration extends AppCompatActivity {
                         // Registration success
                         FirebaseUser firebaseUser = mAuth.getCurrentUser();
                         if (firebaseUser != null) {
-                            // Save additional user data to Firestore
-                            saveUserToFirestore(firebaseUser.getUid(), username, email, age, gender, membership, contact);
+                            //Create token on attempted registration
+                            FirebaseMessaging.getInstance().getToken()
+                                    .addOnSuccessListener(fcmToken->{
+                                        Log.d("Registration Token", "FCM Token: " + fcmToken);
+                                        // Save additional user data to Firestore
+                                        saveUserToFirestore(firebaseUser.getUid(), username, email, age, gender, membership, contact, fcmToken);
+                                    }).addOnFailureListener( e->{
+                                        Log.d("Registration Token", "FCM Token failed to generate: " + e.getMessage());
+                                        // Save additional user data to Firestore
+                                        saveUserToFirestore(firebaseUser.getUid(), username, email, age, gender, membership, contact,"");
+                                    });
+
                         } else {
                             handleRegistrationFailure("User creation failed - please try again");
                         }
@@ -143,7 +154,7 @@ public class Registration extends AppCompatActivity {
     }
 
     private void saveUserToFirestore(String userId, String username, String email, int age,
-                                     String gender, String membership, String contact) {
+                                     String gender, String membership, String contact, String fcmToken) {
         // Create user data map
         Map<String, Object> user = new HashMap<>();
         user.put("username", username);
@@ -152,6 +163,7 @@ public class Registration extends AppCompatActivity {
         user.put("gender", gender);
         user.put("membershipType", membership);
         user.put("contact", contact);
+        user.put("fcmToken", fcmToken);
         user.put("createdAt", System.currentTimeMillis());
         user.put("updatedAt", System.currentTimeMillis());
         user.put("isActive", true);

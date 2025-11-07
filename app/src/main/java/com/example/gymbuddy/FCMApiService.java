@@ -56,7 +56,7 @@ public class FCMApiService {
         this.currentUserToken = token;
     }
 
-    //Register device token with created backend (Server.js)
+    /*Register device token with created backend (Server.js)
     public void registerDevice(String userId, String fcmToken, ApiCallBack callBack){
         try{
             JSONObject object = new JSONObject();
@@ -111,6 +111,8 @@ public class FCMApiService {
             }
         }
     }
+
+     */
 
     //Register token with firestore
     public void registerDeviceWithFirestore(String userId, String fcmToken, ApiCallBack callBack){
@@ -169,7 +171,7 @@ public class FCMApiService {
                 public void onFailure(@NonNull Call call, @NonNull IOException e) {
                     Log.e(TAG, "Failed to send message");
                     if(callBack!= null){
-                        callBack.onFailure(e.getMessage());
+                        callBack.onFailure("Why message failed: " + e.getMessage());
                     }
                 }
 
@@ -199,7 +201,7 @@ public class FCMApiService {
         }
     }
 
-    //Get list registered users
+    /*Get list registered users
     public void getRegisteredUsers(ApiCallBack callBack) {
         Request request = new Request.Builder()
                 .url(BASE_URL + "/users")
@@ -231,6 +233,8 @@ public class FCMApiService {
             }
         });
     }
+
+     */
 
     public interface ApiCallBack {
         void onSuccess(String response);

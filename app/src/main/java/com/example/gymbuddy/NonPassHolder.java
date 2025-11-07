@@ -280,6 +280,10 @@ public class NonPassHolder extends AppCompatActivity {
                                 Toast.makeText(this,
                                         "Request sent to join " + schedule.getTrainerName() + "'s session",
                                         Toast.LENGTH_SHORT).show();
+                                //Create notification to send to trainer
+                                Log.d("Request sent to join", "Calling the send message function" );
+                                sendRequest(currentUser, schedule);
+
                             })
                             .addOnFailureListener(e -> {
                                 Toast.makeText(this, "Failed to send request: " + e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -304,6 +308,54 @@ public class NonPassHolder extends AppCompatActivity {
         request.put("requestedAt", new Date());
         return request;
     }
+
+    //Send message to owner
+    private void sendRequest(FirebaseUser user, ScheduleModel schedule){
+        Log.d("Request Notification", "Sender ID: " + user.getUid());
+        Log.d("Request Notification", "Trainer ID: " + schedule.getUserId());
+
+        String trainerId = schedule.getUserId();
+
+        //Find FCM token in user database
+        db.collection("users")
+                .document(trainerId)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    Log.d("Request Notification" , "Document found: " + documentSnapshot.exists());
+
+                    if(documentSnapshot.exists()){
+                        Log.d("Request Notification" , "Found token for user " + trainerId);
+                        String fcmToken = documentSnapshot.getString("fcmToken");
+                        Log.d("Request Notification" , "Token: " + fcmToken);
+
+                        if (fcmToken != null) {
+                            //Create notification
+                            String title = "New request to join session";
+                            String body = user.getEmail() + " has requested to join your " + schedule.getActivityType() + " session on " + schedule.getDate() + " at " + schedule.getTime();
+                            Log.d("Request Notification", "Calling FCMApiService.sendMessage with title: " + title + ". Message: " + body );
+
+                            //Send to trainer
+                            FCMApiService.getInstance().sendMessage(trainerId, title, body, new FCMApiService.ApiCallBack() {
+                                @Override
+                                public void onSuccess(String response) {
+                                    Log.d("Request Notification", "Message has been delivered to:" + user.getEmail());
+                                }
+                                @Override
+                                public void onFailure(String error) {
+                                    Log.e("Request Notification", "Request failed to send");
+                                }
+                            });
+                        }else{
+                            Log.e("Request Notification", "Failed to send notification, no token found");
+                        }
+                    }else{
+                        Log.e("Request Notification", "Failed to find token for user " + trainerId + " in users collection");
+                    }
+                }).addOnFailureListener(e->{
+                    Log.e("Request Notification", "Failed to find user. Message failed to send message. " + e.getMessage());
+                });
+    }
+
 
     private void loadUserData() {
         FirebaseUser currentUser = mAuth.getCurrentUser();
