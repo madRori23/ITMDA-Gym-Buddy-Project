@@ -67,8 +67,12 @@ public class MyRequests extends AppCompatActivity {
             String currentUserId = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
             Log.d(TAG, "Loading booking requests for user: " + currentUserId);
 
+            String currentDate = new SimpleDateFormat("yyyy/MM/dd", Locale.getDefault()).format(new Date());
+            Log.d("NonPassHolder", "Current date: " + currentDate);
+
             db.collection("booking_requests")
                     .whereEqualTo("userId", currentUserId)
+                    .whereGreaterThanOrEqualTo("scheduleDate", currentDate)
                     .get()
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
