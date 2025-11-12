@@ -261,11 +261,11 @@ public class NonPassHolder extends AppCompatActivity {
             return;
         }
 
-        // Check if user already has a pending request for this schedule
+        // Check if user already has a pending/rejected/accepted request for this schedule
         db.collection("booking_requests")
                 .whereEqualTo("userId", currentUser.getUid())
                 .whereEqualTo("scheduleId", schedule.getId())
-                .whereEqualTo("status", "pending")
+                .whereNotEqualTo("status", "")
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful() && !task.getResult().isEmpty()) {
