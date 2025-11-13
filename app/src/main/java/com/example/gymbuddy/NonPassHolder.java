@@ -261,33 +261,43 @@ public class NonPassHolder extends AppCompatActivity {
             return;
         }
 
-        // Check if user already has a pending/rejected/accepted request for this schedule
+        // Check if user already has a pending request for this schedule
         db.collection("booking_requests")
                 .whereEqualTo("userId", currentUser.getUid())
                 .whereEqualTo("scheduleId", schedule.getId())
-                .whereNotEqualTo("status", "")
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful() && !task.getResult().isEmpty()) {
-                        Toast.makeText(this, "You already have a pending request for this session", Toast.LENGTH_SHORT).show();
-                        return;
+                        QuerySnapshot querySnapshot = task.getResult();
+
+                        DocumentSnapshot document = querySnapshot.getDocuments().get(0);
+                        String status = document.getString("status");
+
+                        switch (status) {
+                            case "pending":
+                                Toast.makeText(this, "You already have a pending request for this session", Toast.LENGTH_SHORT).show();
+                                break;
+                            case "accepted":
+                                Toast.makeText(this, "Your request for this session has already been accepted", Toast.LENGTH_SHORT).show();
+                                break;
+                            case "declined":
+                                Toast.makeText(this, "Your previous request for this session was declined", Toast.LENGTH_SHORT).show();
+                                break;
+                        }
+                    } else {
+
+                        // Create booking request in Firestore
+                        db.collection("booking_requests")
+                                .add(createBookingRequest(currentUser, schedule))
+                                .addOnSuccessListener(documentReference -> {
+                                    Toast.makeText(this,
+                                            "Request sent to join " + schedule.getTrainerName() + "'s session",
+                                            Toast.LENGTH_SHORT).show();
+                                })
+                                .addOnFailureListener(e -> {
+                                    Toast.makeText(this, "Failed to send request: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                });
                     }
-
-                    // Create booking request in Firestore
-                    db.collection("booking_requests")
-                            .add(createBookingRequest(currentUser, schedule))
-                            .addOnSuccessListener(documentReference -> {
-                                Toast.makeText(this,
-                                        "Request sent to join " + schedule.getTrainerName() + "'s session",
-                                        Toast.LENGTH_SHORT).show();
-                                //Create notification to send to trainer
-                                Log.d("Request sent to join", "Calling the send message function" );
-                                sendRequest(currentUser, schedule);
-
-                            })
-                            .addOnFailureListener(e -> {
-                                Toast.makeText(this, "Failed to send request: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                            });
                 });
     }
 
