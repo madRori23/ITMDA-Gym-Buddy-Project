@@ -12,9 +12,13 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.firestore.FirebaseFirestore;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 public class UpdateSchedule extends AppCompatActivity {
 
@@ -23,11 +27,16 @@ public class UpdateSchedule extends AppCompatActivity {
     private Button btnUpdate, btnCancel;
     private Calendar calendar;
     private int scheduleIndex;
+    private FirebaseFirestore db;
+    private String scheduleId; // Add this to store the document ID
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_update_schedule);
+
+        // Initialize Firestore
+        db = FirebaseFirestore.getInstance();
 
         initializeViews();
         setupSpinners();
@@ -56,6 +65,7 @@ public class UpdateSchedule extends AppCompatActivity {
     private void loadScheduleData() {
         Intent intent = getIntent();
         scheduleIndex = intent.getIntExtra("index", -1);
+        scheduleId = intent.getStringExtra("scheduleId"); // Get the document ID
         etTitle.setText(intent.getStringExtra("title"));
         etDate.setText(intent.getStringExtra("date"));
         etTime.setText(intent.getStringExtra("time"));
@@ -125,17 +135,39 @@ public class UpdateSchedule extends AppCompatActivity {
             return;
         }
 
-        Intent resultIntent = new Intent();
-        resultIntent.putExtra("index", scheduleIndex);
-        resultIntent.putExtra("title", title);
-        resultIntent.putExtra("date", date);
-        resultIntent.putExtra("time", time);
-        resultIntent.putExtra("location", location);
+        // Update schedule in Firestore
+        updateScheduleInFirestore(title, date, time, location);
+    }
 
-        setResult(RESULT_OK, resultIntent);
-        finish();
+    private void updateScheduleInFirestore(String title, String date, String time, String location) {
+        // Create a map with the updated data
+        Map<String, Object> scheduleData = new HashMap<>();
+        scheduleData.put("title", title);
+        scheduleData.put("date", date);
+        scheduleData.put("time", time);
+        scheduleData.put("location", location);
 
-        Toast.makeText(this, "Schedule updated successfully", Toast.LENGTH_SHORT).show();
+        // Update the document in Firestore
+        db.collection("schedules")
+                .document(scheduleId) // Use the document ID to update the specific schedule
+                .update(scheduleData)
+                .addOnSuccessListener(aVoid -> {
+                    Intent resultIntent = new Intent();
+                    resultIntent.putExtra("index", scheduleIndex);
+                    resultIntent.putExtra("title", title);
+                    resultIntent.putExtra("date", date);
+                    resultIntent.putExtra("time", time);
+                    resultIntent.putExtra("location", location);
+
+                    setResult(RESULT_OK, resultIntent);
+                    finish();
+
+                    Toast.makeText(this, "Schedule updated successfully", Toast.LENGTH_SHORT).show();
+                })
+                .addOnFailureListener(e -> {
+                    // Firestore update failed
+                    Toast.makeText(this, "Failed to update schedule: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
     }
 
     public void onBackPressedDispatcher() {
